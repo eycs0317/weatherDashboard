@@ -1,20 +1,12 @@
 var userInput = $('#city')
-// $('submit-btn').click(function(e) {
-//   e.preventDefault()
-//   console.log('click')
-//   console.log(userInput)
-// })
-
 var searchForm = $('#search-form')
+var prevSearch = [];
 
 
-https://api.openweathermap.org/data/2.5/weather?q=north pole&appid=676165cbb7e4501a39986378002e67ff
+
 function searchFunction(e) {
   e.preventDefault();
-
   let searchValue = userInput.val();
-
-  // searchValue = 'fremont'
   let key = '676165cbb7e4501a39986378002e67ff'
   let units = 'imperial'
 
@@ -37,7 +29,7 @@ function fetchCurrent(api, key) {
     let date = new Date(data.dt * 1000).toLocaleDateString("en-US")
 
     let temp = data.main.temp
-    let wind = data.wind.speed * 1.1507794
+    let wind = (data.wind.speed * 1.1507794).toFixed(2)
     let humidity = data.main.humidity
     let lat = data.coord.lat
     let lon = data.coord.lon
@@ -51,6 +43,7 @@ function fetchCurrent(api, key) {
     $('#current-temp').text(`Temp: ${temp} °F`)
     $('#current-wind').text(`Wind: ${wind} MPH`)
     $('#current-hum').text(`Humidity: ${humidity} %`)
+    $('#icon').attr('src', iconUrl)
 
 
     let oneCallApi = `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&exclude=minutely,hourly,daily,alerts&appid=${key}`
@@ -59,10 +52,24 @@ function fetchCurrent(api, key) {
     .then(data => {
       console.log(data)
       let uvIndex = data.current.uvi
-      $('#current-uv').text(`UV Index: ${uvIndex}`)
+      var uvResult = checkUVIndex(uvIndex)
+      $('#current-uv').append('UV Index: ' + '<span>' + uvIndex + '</span>')
+      $('span').css("background-color", uvResult)
     })
   })
 
+}
+
+function checkUVIndex(index) {
+  if(index <= 2) {
+    return 'green'
+  } else if (index <= 5) {
+    return 'yellow'
+  } else if (index <= 7) {
+    return 'orange'
+  } else {
+    return 'red'
+  }
 }
 
 

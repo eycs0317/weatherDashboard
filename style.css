@@ -18,6 +18,9 @@ h1 {
 .display-current {
   border: black 1px solid;
 }
+#current-location {
+  display: inline;
+}
 
 .form-label {
   font-size: 27px;
