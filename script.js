@@ -3,7 +3,7 @@ var searchForm = $('#search-form')
 var prevSearch = [];
 
 
-
+// Get the search item and build up the API
 function searchFunction(e) {
   e.preventDefault();
   let searchValue = userInput.val();
@@ -17,6 +17,7 @@ function searchFunction(e) {
 
 }
 
+//function to call 2 api to get the current weather and UV index
 function fetchCurrent(api, key) {
   fetch(api)
   .then(res => {
@@ -26,8 +27,9 @@ function fetchCurrent(api, key) {
     //city
     console.log('data', data)
     let city = data.name
+    //call the function to create the history button
+    addHistoryButton(city)
     let date = new Date(data.dt * 1000).toLocaleDateString("en-US")
-
     let temp = data.main.temp
     let wind = (data.wind.speed * 1.1507794).toFixed(2)
     let humidity = data.main.humidity
@@ -40,9 +42,9 @@ function fetchCurrent(api, key) {
 
 
     $('#current-location').text(`${city} (${date})`)
-    $('#current-temp').text(`Temp: ${temp} °F`)
-    $('#current-wind').text(`Wind: ${wind} MPH`)
-    $('#current-hum').text(`Humidity: ${humidity} %`)
+    $('#current-temp').text(`Temperature: ${temp} °F`)
+    $('#current-wind').text(`Wind Speed: ${wind} MPH`)
+    $('#current-hum').text(`Humidity: ${humidity}%`)
     $('#icon').attr('src', iconUrl)
 
 
@@ -53,13 +55,15 @@ function fetchCurrent(api, key) {
       console.log(data)
       let uvIndex = data.current.uvi
       var uvResult = checkUVIndex(uvIndex)
-      $('#current-uv').append('UV Index: ' + '<span>' + uvIndex + '</span>')
-      $('span').css("background-color", uvResult)
+      $('#current-uv').prepend('UV Index: ')
+      $('span').text(uvIndex)
+      $('.uv-color').css("background-color", uvResult)
     })
   })
 
 }
 
+//function to check UV index and return the color
 function checkUVIndex(index) {
   if(index <= 2) {
     return 'green'
@@ -70,6 +74,10 @@ function checkUVIndex(index) {
   } else {
     return 'red'
   }
+}
+
+function addHistoryButton (cityName) {
+  console.log(cityName)
 }
 
 
