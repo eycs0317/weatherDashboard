@@ -6,7 +6,7 @@
   ## UV Index Information
 
 | UV index | Color   | Harm        |
-| -------- |:-------:| -----------:|
+| -------- |:-------:|:-----------:|
 | 0 to 2   | Green   | "Low"       |
 | 3 to 5   | Yellow  | "Moderate"  |
 | 6 to 7   | Orange  | "High"      |
