@@ -54,13 +54,7 @@ function fetchCurrent(api, key) {
       localStorage.setItem('cityName', JSON.stringify(localStorageData))
       addHistoryButton(city)
     }
-    // console.log('localStorageData',localStorageData)
-    // if(!localStorageData.includes(city)) {
-    //   localStorageData.push(searchValue)
-    //   localStorage.setItem('cityName', JSON.stringify(localStorageData))
-    //   addHistoryButton(city)
-    // }
-    //////////////////////////////////////////////////
+
 
 
     let date = new Date(data.dt * 1000).toLocaleDateString("en-US")
@@ -161,11 +155,12 @@ function fetchForecast (city, key, lat, lon) {
   })
 }
 
-//function when the history button click
-// function historyButtonClick(e) {
-//   console.log('137')
-//   console.log(e)
-//   searchFunction()
-// }
+//clear search history
+$('.btn-danger').click(function() {
+  console.log('click')
+  let emptyArr = []
+  localStorage.setItem('cityName', JSON.stringify(emptyArr))
+  $('.history').empty()
+});
 
 searchForm.on('submit', searchFunction)
