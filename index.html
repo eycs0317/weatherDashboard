@@ -16,15 +16,17 @@
     <!-- search -->
     <div class="row ">
       <div class="col-3 search">
+
         <form id='search-form'>
           <div class="mb-3">
             <label for="city" class="form-label">Search for a City:</label>
             <input type="text" class="form-control" id="city" aria-describedby="emailHelp">
           </div>
           <button type="submit" id='submit-btn' class="btn btn-primary">Search</button>
-          <hr>
-        </form>
 
+        </form>
+        <button type="click" class="btn btn-danger">Clear Search History</button>
+        <hr>
       </div>
       <!-- current -->
       <div class="col-9 display-current">
@@ -40,14 +42,15 @@
     </div>
 
     <div class="row">
-      <div class="col-3 search history-btn">
+
+      <div class="col-3 search history">
         <!-- <button type="button" id='' class="btn btn-primary">Name</button> -->
       </div>
-      <div class="col-9 row card-forecast">
-        <h2>5-day Forecast:</h2>
-        <!-- <div class="col-2 card"></div> -->
 
+      <div class="col-9 row card-forecast">
+        <!-- <div class="col-2 card"></div> -->
       </div>
+
     </div>
 
   </div>

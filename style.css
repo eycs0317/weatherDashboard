@@ -50,8 +50,6 @@ span {
   border-radius: 15%;
 }
 
-/* img {
-  width: 40px;
-  height: 40px;
-
-} */
+.btn-primary {
+  margin-bottom: 3px;
+}

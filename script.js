@@ -2,19 +2,21 @@ var userInput = $('#city')
 var searchForm = $('#search-form')
 var prevSearch = [];
 
-
 // Get the search item and build up the API
 function searchFunction(e) {
   e.preventDefault();
   $('.card-forecast').empty()
 
-  if(userInput.val() === '') {
-    alert('no input');
-    return
-  }
   let searchValue = userInput.val();
   let key = '676165cbb7e4501a39986378002e67ff'
   let units = 'imperial'
+
+
+
+  if(searchValue === '') {
+    searchValue = $(this).attr('id')
+  }
+
 
   let requestApi = `https://api.openweathermap.org/data/2.5/weather?q=${searchValue}&appid=${key}&units=${units}`
 
@@ -38,7 +40,28 @@ function fetchCurrent(api, key) {
     let city = data.name
 
     //call the function to create the history button
-    addHistoryButton(city)
+    let allHistoryButton = $('.history-btn')
+
+    // save all the city name to local storage
+    let localStorageData = JSON.parse(localStorage.getItem('cityName'))
+    if(localStorageData === null) {
+      localStorageData = [];
+      localStorageData.push(city);
+      localStorage.setItem('cityName', JSON.stringify(localStorageData))
+      addHistoryButton(city)
+    } else if (!localStorageData.includes(city)) {
+      localStorageData.push(city);
+      localStorage.setItem('cityName', JSON.stringify(localStorageData))
+      addHistoryButton(city)
+    }
+    // console.log('localStorageData',localStorageData)
+    // if(!localStorageData.includes(city)) {
+    //   localStorageData.push(searchValue)
+    //   localStorage.setItem('cityName', JSON.stringify(localStorageData))
+    //   addHistoryButton(city)
+    // }
+    //////////////////////////////////////////////////
+
 
     let date = new Date(data.dt * 1000).toLocaleDateString("en-US")
     let temp = data.main.temp
@@ -89,14 +112,24 @@ function checkUVIndex(index) {
 }
 
 function addHistoryButton (cityName) {
-
-    let newButton = $('<button>').attr('id',cityName).addClass('btn btn-primary')
+    console.log('history function called')
+    var newButton = $('<button>').attr('id',cityName).addClass('btn btn-primary history-btn')
     newButton.attr('type','button')
     newButton.text(cityName)
-    $('.history-btn').append(newButton)
     console.log('newButton',newButton)
-
+    newButton.on('click',searchFunction)
+    $('.history').prepend(newButton)
 }
+
+function loadInitHistory() {
+  var history = JSON.parse(localStorage.getItem('cityName'))
+  if (history !== null) {
+    history.forEach(name => {
+      addHistoryButton(name)
+    })
+  }
+}
+loadInitHistory()
 
 function fetchForecast (city, key, lat, lon) {
   let requestApi = `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&exclude=current,minutely,hourly,alerts&appid=${key}&units=imperial`
@@ -105,13 +138,16 @@ function fetchForecast (city, key, lat, lon) {
   .then((res) => {
     return res.json()
   }).then((data) => {
+      let $h2 = $('<h2>').text('5-day Forecast:')
+      $('.card-forecast').append($h2)
       for(var i = 1; i < 6 ; i++) {
         let date = new Date(data.daily[i].dt * 1000).toLocaleDateString("en-US");
         let icon = data.daily[i].weather[0].icon;
         let iconUrl = `http://openweathermap.org/img/wn/${icon}@2x.png`
         let temp = data.daily[i].temp.day;
         let humidity = data.daily[i].humidity;
-        // $('.card-forecast').empty()
+
+        let $h2 = $('<h2>').text('5-day Forecast:')
         let $h4 = $('<h4>').text(date);
         let $img = $('<img>').attr('src', iconUrl);
         let $pTemp = $('<p>').text(`Temp: ${temp}°F`)
@@ -122,13 +158,14 @@ function fetchForecast (city, key, lat, lon) {
         $('.card-forecast').append($newCard)
 
       }
-
-
-    //we need - date, icon, temp, humidity
-
   })
 }
 
-
+//function when the history button click
+// function historyButtonClick(e) {
+//   console.log('137')
+//   console.log(e)
+//   searchFunction()
+// }
 
 searchForm.on('submit', searchFunction)
