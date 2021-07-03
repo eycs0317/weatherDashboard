@@ -5,42 +5,44 @@ var prevSearch = [];
 // Get the search item and build up the API
 function searchFunction(e) {
   e.preventDefault();
-  $('.card-forecast').empty()
 
+  //set up all the value to use
   let searchValue = userInput.val();
   let key = '676165cbb7e4501a39986378002e67ff'
   let units = 'imperial'
 
+   //When search button got click with no input
+   if(searchValue === '' &&  $(this).attr('id') === 'search-form') {
+     alert('Please provide a City Name!')
+     return;
+   }
+   $('.card-forecast').empty()
 
-
+  //When one of the History button got click
   if(searchValue === '') {
     searchValue = $(this).attr('id')
   }
 
-
   let requestApi = `https://api.openweathermap.org/data/2.5/weather?q=${searchValue}&appid=${key}&units=${units}`
 
   $("form").trigger("reset");
-
   fetchCurrent(requestApi, key)
-
-
-
 }
 
 //function to call 2 api to get the current weather and UV index
 function fetchCurrent(api, key) {
   fetch(api)
   .then(res => {
-    //console.log(res)
-    return res.json();
+    if(res.ok) {
+      return res.json();
+    } else {
+      console.log('bad input')
+      cityNotFound()
+      return;
+    }
   }).then(data => {
-    //city
-    //console.log('data', data)
-    let city = data.name
 
-    //call the function to create the history button
-    let allHistoryButton = $('.history-btn')
+    let city = data.name
 
     // save all the city name to local storage
     let localStorageData = JSON.parse(localStorage.getItem('cityName'))
@@ -55,8 +57,6 @@ function fetchCurrent(api, key) {
       addHistoryButton(city)
     }
 
-
-
     let date = new Date(data.dt * 1000).toLocaleDateString("en-US")
     let temp = data.main.temp
     let wind = (data.wind.speed * 1.1507794).toFixed(2)
@@ -67,7 +67,6 @@ function fetchCurrent(api, key) {
     let iconUrl = `http://openweathermap.org/img/wn/${iconId}@2x.png`
     //console.log(iconUrl)
     fetchForecast(city, key, lat, lon)
-
 
     $('#current-location').text(`${city} (${date})`)
     $('#current-temp').text(`Temperature: ${temp} °F`)
@@ -88,8 +87,9 @@ function fetchCurrent(api, key) {
       $('.uv-color').text(uvIndex)
       $('.uv-color').css("background-color", uvColorResult)
     })
+  }).catch(err => {
+    console.log('err ', err)
   })
-
 }
 
 //function to check UV index and return the color
@@ -106,11 +106,9 @@ function checkUVIndex(index) {
 }
 
 function addHistoryButton (cityName) {
-    console.log('history function called')
     var newButton = $('<button>').attr('id',cityName).addClass('btn btn-primary history-btn')
     newButton.attr('type','button')
     newButton.text(cityName)
-    console.log('newButton',newButton)
     newButton.on('click',searchFunction)
     $('.history').prepend(newButton)
 }
@@ -142,7 +140,7 @@ function fetchForecast (city, key, lat, lon) {
         let humidity = data.daily[i].humidity;
 
         let $h2 = $('<h2>').text('5-day Forecast:')
-        let $h4 = $('<h4>').text(date);
+        let $h4 = $('<h4>').text(date).css("color", 'white');
         let $img = $('<img>').attr('src', iconUrl);
         let $pTemp = $('<p>').text(`Temp: ${temp}°F`)
         let $pHumidity = $('<p>').text(`Humidity: ${humidity}%`)
@@ -157,11 +155,23 @@ function fetchForecast (city, key, lat, lon) {
 
 //clear search history
 $('.btn-danger').click(function() {
-  console.log('click')
   let emptyArr = []
   localStorage.setItem('cityName', JSON.stringify(emptyArr))
   $('.history').empty()
+  // $('.card-forecast').empty()
 });
+
+//if search city not found
+function cityNotFound() {
+  $('#current-location').text('City Not Found!')
+  $('#current-temp').text('')
+  $('#current-wind').text('')
+  $('#current-hum').text('')
+  $('#icon').removeAttr('src')
+  $('.text').text('')
+  $('.uv-color').text('')
+  $('.uv-color').css("background-color", 'white')
+}
 
 //search button click
 searchForm.on('submit', searchFunction)
