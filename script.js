@@ -94,14 +94,16 @@ function fetchCurrent(api, key) {
 
 //function to check UV index and return the color
 function checkUVIndex(index) {
-  if(index <= 2) {
+  if(index < 3) {
     return 'green'
-  } else if (index <= 5) {
+  } else if (index < 6) {
     return 'yellow'
-  } else if (index <= 7) {
+  } else if (index < 8) {
     return 'orange'
-  } else {
+  } else if (index < 11) {
     return 'red'
+  } else {
+    return 'violet'
   }
 }
 
