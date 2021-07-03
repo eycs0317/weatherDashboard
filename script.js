@@ -82,11 +82,11 @@ function fetchCurrent(api, key) {
     .then(data => {
       //console.log(data)
       let uvIndex = data.current.uvi
-      var uvResult = checkUVIndex(uvIndex)
+      var uvColorResult = checkUVIndex(uvIndex)
 
-      $('#current-uv').prepend('UV Index: ')
-      $('span').text(uvIndex)
-      $('.uv-color').css("background-color", uvResult)
+      $('#current-uv').text('UV Index: ')
+      $('.uv-color').text(uvIndex)
+      // $('.uv-color').css("background-color", uvColorResult)
     })
   })
 
@@ -163,4 +163,5 @@ $('.btn-danger').click(function() {
   $('.history').empty()
 });
 
+//search button click
 searchForm.on('submit', searchFunction)
