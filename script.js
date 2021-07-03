@@ -84,9 +84,9 @@ function fetchCurrent(api, key) {
       let uvIndex = data.current.uvi
       var uvColorResult = checkUVIndex(uvIndex)
 
-      $('#current-uv').text('UV Index: ')
+      $('.text').text('UV Index: ')
       $('.uv-color').text(uvIndex)
-      // $('.uv-color').css("background-color", uvColorResult)
+      $('.uv-color').css("background-color", uvColorResult)
     })
   })
 
