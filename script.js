@@ -1,6 +1,5 @@
 var userInput = $('#city')
 var searchForm = $('#search-form')
-var prevSearch = [];
 
 // Get the search item and build up the API
 function searchFunction(e) {
@@ -160,7 +159,6 @@ $('.btn-danger').click(function() {
   let emptyArr = []
   localStorage.setItem('cityName', JSON.stringify(emptyArr))
   $('.history').empty()
-  // $('.card-forecast').empty()
 });
 
 //if search city not found
