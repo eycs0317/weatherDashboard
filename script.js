@@ -1,14 +1,10 @@
-var userInput = $('#city')
-var searchForm = $('#search-form')
-
 // Get the search item and build up the API
 function searchFunction(e) {
   e.preventDefault();
 
   //set up all the value to use
-  let searchValue = userInput.val();
+  let searchValue = $('#city').val();
   let key = '676165cbb7e4501a39986378002e67ff'
-  let units = 'imperial'
 
    //When search button got click with no input
    if(searchValue === '' &&  $(this).attr('id') === 'search-form') {
@@ -22,7 +18,7 @@ function searchFunction(e) {
     searchValue = $(this).attr('id')
   }
 
-  let requestApi = `https://api.openweathermap.org/data/2.5/weather?q=${searchValue}&appid=${key}&units=${units}`
+  let requestApi = `https://api.openweathermap.org/data/2.5/weather?q=${searchValue}&appid=${key}&units=imperial`
 
   $("form").trigger("reset");
   fetchCurrent(requestApi, key)
@@ -35,7 +31,6 @@ function fetchCurrent(api, key) {
     if(res.ok) {
       return res.json();
     } else {
-      console.log('bad input')
       cityNotFound()
       return;
     }
@@ -45,6 +40,7 @@ function fetchCurrent(api, key) {
 
     // save all the city name to local storage
     let localStorageData = JSON.parse(localStorage.getItem('cityName'))
+    //check to see if the local storage are empty
     if(localStorageData === null) {
       localStorageData = [];
       localStorageData.push(city);
@@ -64,7 +60,7 @@ function fetchCurrent(api, key) {
     let lon = data.coord.lon
     let iconId = data.weather[0].icon
     let iconUrl = `http://openweathermap.org/img/wn/${iconId}@2x.png`
-    //console.log(iconUrl)
+
     fetchForecast(city, key, lat, lon)
 
     $('#current-location').text(`${city} (${date})`)
@@ -73,12 +69,12 @@ function fetchCurrent(api, key) {
     $('#current-hum').text(`Humidity: ${humidity}%`)
     $('#icon').attr('src', iconUrl)
 
-
+    //Get the UV index
     let oneCallApi = `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&exclude=minutely,hourly,daily,alerts&appid=${key}`
     fetch(oneCallApi)
     .then(res => res.json())
     .then(data => {
-      //console.log(data)
+
       let uvIndex = data.current.uvi
       var uvColorResult = checkUVIndex(uvIndex)
 
@@ -107,11 +103,11 @@ function checkUVIndex(index) {
 }
 
 function addHistoryButton (cityName) {
-    var newButton = $('<button>').attr('id',cityName).addClass('btn btn-primary history-btn')
-    newButton.attr('type','button')
-    newButton.text(cityName)
-    newButton.on('click',searchFunction)
-    $('.history').prepend(newButton)
+    var $newButton = $('<button>').attr('id',cityName).addClass('btn btn-primary history-btn')
+    $newButton.attr('type','button')
+    $newButton.text(cityName)
+    $newButton.on('click',searchFunction)
+    $('.history').prepend($newButton)
 }
 
 function loadInitHistory() {
@@ -149,7 +145,6 @@ function fetchForecast (city, key, lat, lon) {
 
         $newCard.append($h4, $img, $pTemp, $pHumidity)
         $('.card-forecast').append($newCard)
-
       }
   })
 }
@@ -174,4 +169,4 @@ function cityNotFound() {
 }
 
 //search button click
-searchForm.on('submit', searchFunction)
+$('#search-form').on('submit', searchFunction)
